@@ -9,7 +9,7 @@
 			"modernui" : 1
 		}
 ,
-		"rect" : [ 34.0, 78.0, 1372.0, 788.0 ],
+		"rect" : [ 34.0, 78.0, 924.0, 788.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -50,7 +50,7 @@
 			}
 , 			{
 				"box" : 				{
-					"comment" : "",
+					"comment" : "Signal out",
 					"id" : "obj-12",
 					"index" : 0,
 					"maxclass" : "outlet",
@@ -165,7 +165,7 @@
 			}
 , 			{
 				"box" : 				{
-					"comment" : "",
+					"comment" : "Modulation index",
 					"id" : "obj-3",
 					"index" : 0,
 					"maxclass" : "inlet",
@@ -179,7 +179,7 @@
 			}
 , 			{
 				"box" : 				{
-					"comment" : "",
+					"comment" : "Frequency",
 					"id" : "obj-2",
 					"index" : 0,
 					"maxclass" : "inlet",
