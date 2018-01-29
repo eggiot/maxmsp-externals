@@ -71,6 +71,9 @@ function coprimes(lo, hi, step, seed) {
 inlets = 1;
 outlets = 1;
 
+setinletassist(0, "List [min, max, step, seed]");
+setoutletassist(0, "List of coprimes");
+
 function list() {
 	var args = arguments;
 	var lo = args[0];
