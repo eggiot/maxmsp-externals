@@ -43,7 +43,7 @@ In reality, it returns the value, the two input values and the two
 output values and these can be fed into the [scale] object in Max.
 */
 
-var output_map = {};
+var output_map = [];
 
 // declare inlets
 
@@ -73,58 +73,63 @@ setoutletassist(high_output_outlet, "The top of the current output range");
 
 
 /*
-    Generate output map
-
-Take in a list of the format:
-    [in_1, out_1, in_2, out_2, in_n, out_n]
-
-and convert it to a dictionary in the format:
-    {in_1: out_1, in_2: out_2, in_n: out_n}
+    Get output map
 */
 function list() {
-    var args = arguments;
-
-    // reset output_map
-    output_map = {};
-
-    for (var i = 0; i < arguments.length; i += 2)
-    {
-        var input_value = arguments[i];
-        var output_value = arguments[i+1];
-        output_map[input_value] = output_value;
-    }
+    output_map = arguments;
 }
 
 // scale the value according to the values in output_map
 function msg_float(a)
 {
-    if (Object.keys(output_map).length > 0)
+    if (output_map.length > 0)
     {
-        var last_input_value = output_map[0];
-        for(var input_value in output_map)
+        // if we're at the end or past the last input range
+        if(a >= end_index(output_map, 1))
         {
-            if (input_value <= a)
-            {
-                last_input_value = input_value;
-            }
+            outlet(low_input_outlet, end_index(output_map, 3));
+            outlet(high_input_outlet, end_index(output_map, 1));
+            outlet(low_output_outlet, end_index(output_map, 2));
+            outlet(high_output_outlet, end_index(output_map, 0));
+            outlet(value_outlet, a);             
+        }
 
-            /*
-            If input_value > a, then it is the top of our input
-            range and last_input_value must be the bottom of our
-            current input range.
+        // if we're at the beginning or below the first input range
+        else if(a <= output_map[0])
+        {
+            outlet(low_input_outlet, output_map[0]);
+            outlet(high_input_outlet, output_map[2]);
+            outlet(low_output_outlet, output_map[1]);
+            outlet(high_output_outlet, output_map[3]);
+            outlet(value_outlet, a);             
+        }
 
-            The output values associated with these two values
-            must therefore define the current output range.
-            */
-            else if (input_value > a)
+        // if we're within the input range
+        else
+        {
+            for(var i = 0; i < output_map.length; i += 2)
             {
-                outlet(low_input_outlet, parseFloat(last_input_value));
-                outlet(high_input_outlet, parseFloat(input_value));
-                outlet(low_output_outlet, output_map[last_input_value]);
-                outlet(high_output_outlet, output_map[input_value]);
-                outlet(value_outlet, a);
-                break;
+                /*
+                If the current input value > a, then it is the top of
+                our input range and the input value below it must be
+                the bottom of our current input range.
+
+                The output values associated with these two values
+                must therefore define the current output range.
+                */
+                if(output_map[i] > a)
+                {
+                    outlet(low_input_outlet, output_map[i-2]);
+                    outlet(high_input_outlet, output_map[i]);
+                    outlet(low_output_outlet, output_map[i-1]);
+                    outlet(high_output_outlet, output_map[i+1]);
+                    outlet(value_outlet, a);
+                    break;
+                }
             }
         }
     }
 }
+
+// index array from the end - 0 indexed
+function end_index(a, index) {return a[a.length - (index + 1)];}
